@@ -27,12 +27,12 @@
 
 #include <limits.h>
 #include "bspatch.h"
-
+// 将 8 字节的缓冲区转换为 64 位整数
 static int64_t offtin(uint8_t *buf)
 {
 	int64_t y;
-
-	y=buf[7]&0x7F;
+    // 从最低字节开始，逐字节构建整数
+	y=buf[7]&0x7F; // 最高字节的低 7 位
 	y=y*256;y+=buf[6];
 	y=y*256;y+=buf[5];
 	y=y*256;y+=buf[4];
@@ -40,12 +40,12 @@ static int64_t offtin(uint8_t *buf)
 	y=y*256;y+=buf[2];
 	y=y*256;y+=buf[1];
 	y=y*256;y+=buf[0];
-
+    // 如果最高位为 1，则是负数
 	if(buf[7]&0x80) y=-y;
 
 	return y;
 }
-
+// 主要的补丁应用函数
 int bspatch(const uint8_t* old, int64_t oldsize, uint8_t* new, int64_t newsize, struct bspatch_stream* stream)
 {
 	uint8_t buf[8];
